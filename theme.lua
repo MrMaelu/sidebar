@@ -9,7 +9,7 @@ theme.apply = function (settings)
 
     options.offset = settings.Theme.Offset
 
-    options.animation = settings.animation or theme_path .. "animation\\frame_1.png"
+    options.animation = settings.animation or addon.path .. "animation\\frame_1.png"
 
     options.background = settings.background or theme_path .. "background.png"
     options.foreground = settings.foreground or theme_path .. "foreground.png"

@@ -264,35 +264,7 @@ previous_stats = {
     res_dar = 0
 }
 
-
-local frame_no = 0
-
-ashita.events.register('d3d_present', 'present_cb', function ()
-    if sidebar.hide == false and GetGameInterfaceHidden() == true then
-        sidebar.hide = true
-        hide()
-    elseif sidebar.hide == true and GetGameInterfaceHidden() == false then
-        sidebar.hide = false
-        show()
-    end
-
-    if settings.Tarus > 0 then
-        frame_no = frame_no + 1
-        if frame_no >= 120 then
-            frame_no = 0
-        end
-        for i = 1, settings.Tarus do
-            if ui.animations[i].position_x < 0 then
-                speed[i] = math.random(settings.Taru_speed[1], settings.Taru_speed[2])
-            end
-            ui:animate(ui.animations[i], frame_no, speed[i])
-        end
-    end
-
-    CheckStats()
-
-    if sidebar.ready == false then return end
-
+local function UpdateStats()
     local p_stats = {
         exph = xph_10m,
         area = player.area,
@@ -328,6 +300,42 @@ ashita.events.register('d3d_present', 'present_cb', function ()
             previous_stats[stat] = new_value
         end
     end
+end
+
+local frame_no = 0
+local check_interval = 200  -- 200ms interval
+local last_check_time = 0
+
+ashita.events.register('d3d_present', 'present_cb', function ()
+    if sidebar.hide == false and GetGameInterfaceHidden() == true then
+        sidebar.hide = true
+        hide()
+    elseif sidebar.hide == true and GetGameInterfaceHidden() == false then
+        sidebar.hide = false
+        show()
+    end
+
+    if sidebar.ready == false then return end
+
+    if settings.Tarus > 0 then
+        frame_no = frame_no + 1
+        if frame_no >= 120 then
+            frame_no = 0
+        end
+        for i = 1, settings.Tarus do
+            if ui.animations[i].position_x < 0 then
+                speed[i] = math.random(settings.Taru_speed[1], settings.Taru_speed[2])
+            end
+            ui:animate(ui.animations[i], frame_no, speed[i])
+        end
+    end
+
+    local current_time = ashita.time.clock().ms
+    if current_time - last_check_time >= check_interval then
+        CheckStats()
+        UpdateStats()
+        last_check_time = current_time
+    end
 
     if pendingScale and ashita.time.clock().ms >= scaleUpdateTimer then
         settings.Theme.Scale = pendingScale
@@ -348,4 +356,3 @@ end)
 ashita.events.register('unload', 'load_cb', function ()
     texts:destroy_interface()
 end)
-

@@ -206,7 +206,7 @@ function ui.animate(dummy, anim, i, speed)
     else
         anim.position_x = anim.position_x - speed
     end
-    setup_image(anim, theme_path .. "animation\\frame_" .. math.floor(i/3) .. "_100px.png")
+    setup_image(anim, addon.path .. "animation\\frame_" .. math.floor(i/3) .. "_100px.png")
     anim.visible = true
 end
 
